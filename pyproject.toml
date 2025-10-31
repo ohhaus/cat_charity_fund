@@ -54,7 +54,8 @@ exclude = [
     "scripts",
     "setup_for_postman.py",
     "pytest.ini",
-    "pyproject.toml"
+    "pyproject.toml",
+    "versions"
 ]
 
 select = [
@@ -71,6 +72,7 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
     "F401",  # unused import (часто в __init__.py)
+    "UP017",
 ]
 
 [tool.ruff.lint.isort]
