@@ -1,0 +1,113 @@
+[project]
+name = "cat-charity-fund"
+version = "0.1.0"
+description = "QRKot Project"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "alembic>=1.17.1",
+    "cryptography>=46.0.3",
+    "email-validator>=2.3.0",
+    "fastapi>=0.120.4",
+    "fastapi-users>=15.0.1",
+    "fastapi-users-db-sqlalchemy>=7.0.0",
+    "passlib>=1.7.4",
+    "pydantic>=2.12.3",
+    "pydantic-settings>=2.11.0",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.2.1",
+    "python-multipart>=0.0.20",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.44",
+    "uvicorn>=0.38.0",
+]
+
+[dependency-groups]
+dev = [
+    "faker>=37.12.0",
+    "flake8>=7.3.0",
+    "freezegun>=1.5.5",
+    "mixer>=7.2.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-freezegun>=0.4.2",
+    "pytest-lazy-fixture>=0.6.3",
+    "pytest-pythonpath>=0.7.3",
+    "ruff>=0.14.3",
+]
+
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+
+exclude = [
+    ".venv",
+    ".git",
+    "__pycache__",
+    "build",
+    "tests",
+    "dist",
+    "migrations",
+    "docs",
+    "scripts",
+    "setup_for_postman.py",
+    "pytest.ini",
+    "pyproject.toml"
+]
+
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (сортировка импортов)
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+
+ignore = [
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "F401",  # unused import (часто в __init__.py)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+lines-after-imports = 2
+force-single-line = false
+combine-as-imports = true
+force-sort-within-sections = true
+order-by-type = true
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+avoid-escape = true
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.pycodestyle]
+max-doc-length = 79
+
+[project.scripts]
+lint = "ruff check app"
+format = "ruff format app"
+format-check = "ruff format --check app"
+lint-fix = "ruff check --fix app"
+sort-imports = "ruff check --select I --fix app"
