@@ -1,0 +1,38 @@
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+class DonationBase(BaseModel):
+    comment: str | None = Field(None, description='Комментарий')
+    full_amount: int | None = Field(
+        None, gt=0, description='Полная сумма пожертвования'
+    )
+
+    model_config = ConfigDict(extra='forbid')
+
+
+class DonationCreate(DonationBase):
+    full_amount: int = Field(
+        ..., gt=0, description='Обязательная сумма пожертвования'
+    )
+
+
+class DonationUpdate(DonationBase):
+    @field_validator('full_amount')
+    def validate_positive(cls, value):
+        if value is not None and value <= 0:
+            raise ValueError('full_amount должно быть больше 0')
+        return value
+
+
+class DonationDB(DonationBase):
+    id: int
+    user_id: int
+    invested_amount: int = Field(0, ge=0)
+    fully_invested: bool = False
+    created_at: datetime
+    closed_at: datetime | None = None
+    full_amount: int
+
+    model_config = ConfigDict(from_attributes=True)
