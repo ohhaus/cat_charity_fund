@@ -1,5 +1,4 @@
-from collections.abc import Sequence
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Sequence, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -22,8 +21,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         obj_in: CreateSchemaType,
         session: AsyncSession,
+        extra_data: dict | None,
     ) -> ModelType:
         obj_data = obj_in.model_dump()
+        if extra_data:
+            obj_data.update(extra_data)
         db_obj = self.model(**obj_data)
         session.add(db_obj)
         await session.commit()
@@ -41,13 +43,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_multi(self, session: AsyncSession) -> Sequence[ModelType]:
         result = await session.execute(select(self.model))
         return result.scalars().all()
-
-    async def get_by_attribute(
-        self, attr_name: str, value: Any, session: AsyncSession
-    ) -> ModelType | None:
-        attr = getattr(self.model, attr_name)
-        result = await session.execute(select(self.model).where(attr == value))
-        return result.scalar_one_or_none()
 
     async def update(
         self,

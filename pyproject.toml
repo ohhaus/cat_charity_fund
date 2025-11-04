@@ -73,6 +73,7 @@ ignore = [
     "C901",  # too complex
     "F401",  # unused import (часто в __init__.py)
     "UP017",
+    "UP035",
 ]
 
 [tool.ruff.lint.isort]
