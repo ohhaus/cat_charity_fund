@@ -1,14 +1,24 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.validators import check_name_duplicate, check_project_exists
+from app.api.validators import (
+    check_full_amount_not_less_than_invested,
+    check_name_duplicate,
+    check_project_exists,
+    check_project_not_closed,
+)
 from app.core.db import get_async_session
+from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
+from app.models import User
 from app.schemas.charity_project import (
     CharityProjectCreate,
     CharityProjectDB,
     CharityProjectUpdate,
 )
+from app.services.investing import invest
 
 
 router = APIRouter()
@@ -18,9 +28,19 @@ router = APIRouter()
 async def create_charity_project(
     project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_superuser),
 ):
     await check_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
+
+    session.add_all(
+        invest(
+            target=new_project,
+            sources=await charity_project_crud.get_active_projects(session),
+        )
+    )
+    await session.commit()
+    await session.refresh(new_project)
     return new_project
 
 
@@ -45,11 +65,41 @@ async def update_charity_project(
     project_id: int,
     project_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_superuser),
 ):
     project = await check_project_exists(project_id, session)
+    await check_project_not_closed(project)
 
-    # Добавить проверку на закрытие проекта
-    # А также добавить логику финансирования проекта
+    if project_in.name:
+        await check_name_duplicate(
+            project_in.name,
+            session,
+            project_id,
+        )
+    await check_full_amount_not_less_than_invested(
+        project,
+        project_in.full_amount,
+    )
+
+    updated_project = await charity_project_crud.update(
+        project,
+        project_in,
+        session,
+    )
+
+    if updated_project.invested_amount == updated_project.full_amount:
+        updated_project.fully_invested = True
+        updated_project.close_date = datetime.now(timezone.utc)
+
+    session.add_all(
+        invest(
+            target=updated_project,
+            sources=await charity_project_crud.get_active_projects(session),
+        )
+    )
+
+    await session.commit()
+    await session.refresh(project)
 
     return project
 
@@ -60,7 +110,9 @@ async def update_charity_project(
     response_model_exclude_none=True,
 )
 async def delete_charity_project(
-    project_id: int, session: AsyncSession = Depends(get_async_session)
+    project_id: int,
+    session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_superuser),
 ):
     project = await check_project_exists(project_id, session)
     project = await charity_project_crud.remove(project, session)

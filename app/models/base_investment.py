@@ -27,7 +27,7 @@ class BaseInvestment(Base):
     )
 
     def close_investment(self):
-        if self.invested_amount == self.full_amount:
+        if self.invested_amount >= self.full_amount:
             self.fully_invested = True
             self.close_date = datetime.now(timezone.utc)
 

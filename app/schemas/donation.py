@@ -31,8 +31,8 @@ class DonationDB(DonationBase):
     user_id: int
     invested_amount: int = Field(0, ge=0)
     fully_invested: bool = False
-    created_at: datetime
-    closed_at: datetime | None = None
+    created_date: datetime
+    closed_date: datetime | None = None
     full_amount: int
 
     model_config = ConfigDict(from_attributes=True)

@@ -29,7 +29,7 @@ class CharityProjectDB(CharityProjectBase):
     id: int
     invested_amount: int = Field(0, ge=0)
     fully_invested: bool = False
-    created_at: datetime
+    created_date: datetime
     closed_at: datetime | None = None
     name: str
     description: str
