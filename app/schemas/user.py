@@ -1,8 +1,15 @@
 from fastapi_users import schemas
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
-class UserRead(schemas.BaseUser[int]):
-    pass
+class UserRead(BaseModel):
+    id: int
+    email: EmailStr
+    is_active: bool
+    is_superuser: bool
+    is_verified: bool
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreate(schemas.BaseUserCreate):
@@ -10,4 +17,4 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    pass
+    email: EmailStr | None = None
