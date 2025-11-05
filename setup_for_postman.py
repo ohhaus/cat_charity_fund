@@ -15,12 +15,11 @@ class UserCreationError(Exception):
 
 if __name__ == '__main__':
     try:
-        asyncio.run(create_superuser('root@admin.ru', 'root', is_superuser=True))
+        asyncio.run(create_superuser())
     except Exception:
         raise UserCreationError(
-            'Не удалось создать суперпользователя. Создайте '
-            'суперпользователя самостоятельно, используя следующие учетные '
-            'данные:\n'
+            'Не удалось создать суперпользователя. '
+            'Создайте суперпользователя самостоятельно:\n'
             'email: root@admin.ru\n'
             'password: root'
         )
