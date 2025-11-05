@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.120.4",
     "fastapi-users>=15.0.1",
     "fastapi-users-db-sqlalchemy>=7.0.0",
+    "httpx>=0.28.1",
     "passlib>=1.7.4",
     "pydantic>=2.12.3",
     "pydantic-settings>=2.11.0",
@@ -25,13 +26,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "faker>=37.12.0",
+    "faker>=12.0.1",
     "flake8>=7.3.0",
-    "freezegun>=1.5.5",
-    "mixer>=7.2.0",
+    "freezegun>=1.2.1",
+    "mixer>=7.2.2",
     "pre-commit>=4.3.0",
-    "pytest>=8.4.2",
-    "pytest-asyncio>=1.2.0",
+    "pytest<8.0",
+    "pytest-asyncio>=0.23.4",
     "pytest-freezegun>=0.4.2",
     "pytest-lazy-fixture>=0.6.3",
     "pytest-pythonpath>=0.7.3",
