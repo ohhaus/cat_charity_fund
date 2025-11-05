@@ -1,7 +1,7 @@
 import asyncio
 
 try:
-    from app.core.init_db import create_user
+    from app.core.init_superuser import create_superuser
 except (ImportError, NameError):
     raise ImportError(
         'Не удалось импортировать функцию `create_user` из модуля '
@@ -15,7 +15,7 @@ class UserCreationError(Exception):
 
 if __name__ == '__main__':
     try:
-        asyncio.run(create_user('root@admin.ru', 'root', is_superuser=True))
+        asyncio.run(create_superuser('root@admin.ru', 'root', is_superuser=True))
     except Exception:
         raise UserCreationError(
             'Не удалось создать суперпользователя. Создайте '

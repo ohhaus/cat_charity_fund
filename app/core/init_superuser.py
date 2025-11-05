@@ -29,7 +29,3 @@ async def create_superuser():
 
             user = await manager.create(user_dict)
             print(f'Суперпользователь {user.email} создан.')
-
-
-if __name__ == '__main__':
-    asyncio.run(create_superuser())
