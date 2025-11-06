@@ -134,3 +134,4 @@ dmypy.json
 # Database
 
 fastapi.db
+test.db
