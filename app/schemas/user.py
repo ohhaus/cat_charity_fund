@@ -9,7 +9,8 @@ class UserRead(BaseModel):
     is_superuser: bool
     is_verified: bool
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class UserCreate(schemas.BaseUserCreate):

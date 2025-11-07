@@ -8,7 +8,8 @@ class CharityProjectBase(BaseModel):
     description: str | None = Field(None)
     full_amount: int | None = Field(None, gt=0)
 
-    model_config = ConfigDict(extra='forbid')
+    class Config:
+        extra = 'forbid'
 
 
 class CharityProjectCreate(CharityProjectBase):
@@ -47,4 +48,5 @@ class CharityProjectDB(CharityProjectBase):
     description: str
     full_amount: int
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True

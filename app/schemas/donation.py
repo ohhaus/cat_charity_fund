@@ -9,8 +9,8 @@ class DonationBase(BaseModel):
         None, gt=0, description='Полная сумма пожертвования'
     )
 
-    model_config = ConfigDict(extra='forbid')
-
+    class Config:
+        extra = 'forbid'
 
 class DonationCreate(DonationBase):
     full_amount: int = Field(
@@ -31,7 +31,8 @@ class DonationUserDB(DonationBase):
     create_date: datetime
     full_amount: int
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class DonationDB(DonationBase):
@@ -43,4 +44,5 @@ class DonationDB(DonationBase):
     close_date: datetime | None = None
     full_amount: int
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
