@@ -25,7 +25,7 @@ class CRUDCharityProject(
     async def get_active_projects(self, session: AsyncSession):
         active_projects_list = await session.execute(
             select(CharityProject)
-            .where(CharityProject.fully_invested == False)
+            .where(CharityProject.fully_invested.is_(False))
             .order_by(CharityProject.create_date)
         )
         return active_projects_list.scalars().all()
