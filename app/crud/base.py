@@ -1,4 +1,4 @@
-from typing import Generic, Sequence, TypeVar
+from typing import Generic, Optional, Sequence, Type, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -14,14 +14,14 @@ UpdateSchemaType = TypeVar('UpdateSchemaType', bound=BaseModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: type[ModelType]):
+    def __init__(self, model: Type[ModelType]):
         self.model = model
 
     async def create(
         self,
         obj_in: CreateSchemaType,
         session: AsyncSession,
-        extra_data: dict | None = None,
+        extra_data: Optional[dict] = None,
     ) -> ModelType:
         obj_data = obj_in.model_dump()
         if extra_data:
@@ -34,7 +34,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     async def get(
         self, obj_id: int, session: AsyncSession
-    ) -> ModelType | None:
+    ) -> Optional[ModelType]:
         result = await session.execute(
             select(self.model).where(self.model.id == obj_id)
         )

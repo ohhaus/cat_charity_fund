@@ -1,11 +1,12 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
 
 class DonationBase(BaseModel):
-    comment: str | None = Field(None, description='Комментарий')
-    full_amount: int | None = Field(
+    comment: Optional[str] = Field(None, description='Комментарий')
+    full_amount: Optional[int] = Field(
         None, gt=0, description='Полная сумма пожертвования'
     )
 
@@ -42,7 +43,7 @@ class DonationDB(DonationBase):
     invested_amount: int = Field(0, ge=0)
     fully_invested: bool = False
     create_date: datetime
-    close_date: datetime | None = None
+    close_date: Optional[datetime] = None
     full_amount: int
 
     class Config:

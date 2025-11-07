@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +10,7 @@ from app.models.charity_project import CharityProject
 async def check_name_duplicate(
     name: str,
     session: AsyncSession,
-    current_project_id: int | None = None,
+    current_project_id: Optional[int] = None,
 ) -> None:
     existing_project = await charity_project_crud.get_by_name(name, session)
     if existing_project and existing_project.id != current_project_id:
@@ -34,10 +36,12 @@ async def check_project_not_closed(project: CharityProject):
 
 async def check_full_amount_not_less_than_invested(
     project: CharityProject,
-    new_full_amount: int | None,
+    new_full_amount: Optional[int],
 ):
-    if (new_full_amount is not None and
-            new_full_amount < project.invested_amount):
+    if (
+        new_full_amount is not None
+        and new_full_amount < project.invested_amount
+    ):
         raise HTTPException(
             status_code=400,
             detail='Требуемая сумма не может быть меньше уже вложенной.',

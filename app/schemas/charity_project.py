@@ -1,12 +1,13 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
 
 class CharityProjectBase(BaseModel):
-    name: str | None = Field(None, max_length=100)
-    description: str | None = Field(None)
-    full_amount: int | None = Field(None, gt=0)
+    name: Optional[str] = Field(None, max_length=100)
+    description: Optional[str] = Field(None)
+    full_amount: Optional[int] = Field(None, gt=0)
 
     class Config:
         extra = 'forbid'
@@ -43,7 +44,7 @@ class CharityProjectDB(CharityProjectBase):
     invested_amount: int = Field(0, ge=0)
     fully_invested: bool = False
     create_date: datetime
-    close_date: datetime | None = None
+    close_date: Optional[datetime] = None
     name: str
     description: str
     full_amount: int

@@ -1,4 +1,4 @@
-from typing import Sequence, TypeVar
+from typing import List, Sequence, TypeVar
 
 from app.models.base_investment import BaseInvestment
 
@@ -8,7 +8,7 @@ InvestableType = TypeVar('InvestableType', bound=BaseInvestment)
 
 def invest(
     target: InvestableType, sources: Sequence[InvestableType]
-) -> list[InvestableType]:
+) -> List[InvestableType]:
     """Перераспределяет средства между источниками и целью."""
     updated = []
     for src in sources:

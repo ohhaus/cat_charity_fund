@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi_users import schemas
 from pydantic import BaseModel, EmailStr
 
@@ -18,4 +20,4 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    email: EmailStr | None = None
+    email: Optional[EmailStr] = None
