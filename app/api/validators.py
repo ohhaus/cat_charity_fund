@@ -36,9 +36,8 @@ async def check_full_amount_not_less_than_invested(
     project: CharityProject,
     new_full_amount: int | None,
 ):
-    if (
-        new_full_amount is not None
-        and new_full_amount < project.invested_amount
+    if (new_full_amount is not None and
+            new_full_amount < project.invested_amount
     ):
         raise HTTPException(
             status_code=400,
