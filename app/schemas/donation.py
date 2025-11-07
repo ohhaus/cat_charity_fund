@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, validator
 
 
 class DonationBase(BaseModel):
@@ -21,7 +21,7 @@ class DonationCreate(DonationBase):
 
 
 class DonationUpdate(DonationBase):
-    @field_validator('full_amount')
+    @validator('full_amount')
     def validate_positive(cls, value):
         if value is not None and value <= 0:
             raise ValueError('full_amount должно быть больше 0')
@@ -34,7 +34,7 @@ class DonationUserDB(DonationBase):
     full_amount: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 class DonationDB(DonationBase):
@@ -47,4 +47,4 @@ class DonationDB(DonationBase):
     full_amount: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True

@@ -23,7 +23,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session: AsyncSession,
         extra_data: Optional[dict] = None,
     ) -> ModelType:
-        obj_data = obj_in.model_dump()
+        obj_data = obj_in.dict()
         if extra_data:
             obj_data.update(extra_data)
         db_obj = self.model(**obj_data)
@@ -51,7 +51,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session: AsyncSession,
     ) -> ModelType:
         obj_data = jsonable_encoder(db_obj)
-        update_data = obj_in.model_dump(exclude_unset=True)
+        update_data = obj_in.dict(exclude_unset=True)
 
         for field in obj_data:
             if field in update_data:
