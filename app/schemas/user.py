@@ -1,5 +1,5 @@
 from fastapi_users import schemas
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, EmailStr
 
 
 class UserRead(BaseModel):

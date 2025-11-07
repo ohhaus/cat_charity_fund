@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class DonationBase(BaseModel):
@@ -11,6 +11,7 @@ class DonationBase(BaseModel):
 
     class Config:
         extra = 'forbid'
+
 
 class DonationCreate(DonationBase):
     full_amount: int = Field(
