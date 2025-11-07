@@ -1,4 +1,4 @@
-from typing import Any, Generic, Sequence, TypeVar
+from typing import Generic, Sequence, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel

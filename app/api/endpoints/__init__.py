@@ -1,4 +1,4 @@
-from .auth import router as auth_router
-from .charity_projects import router as charity_project_router
-from .donation import router as donation_router
-from .user import router as user_router
+from .auth import router as auth_router  # noqa
+from .charity_projects import router as charity_project_router  # noqa
+from .donation import router as donation_router  # noqa
+from .user import router as user_router  # noqa

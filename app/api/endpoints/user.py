@@ -3,13 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
 from app.core.user import (
-    auth_backend,
     current_superuser,
     current_user,
-    fastapi_users,
 )
 from app.models.user import User
-from app.schemas.user import UserCreate, UserRead, UserUpdate
+from app.schemas.user import UserRead, UserUpdate
 
 
 router = APIRouter()
