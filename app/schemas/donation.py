@@ -26,13 +26,21 @@ class DonationUpdate(DonationBase):
         return value
 
 
+class DonationUserDB(DonationBase):
+    id: int
+    create_date: datetime
+    full_amount: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class DonationDB(DonationBase):
     id: int
     user_id: int
     invested_amount: int = Field(0, ge=0)
     fully_invested: bool = False
-    created_date: datetime
-    closed_date: datetime | None = None
+    create_date: datetime
+    close_date: datetime | None = None
     full_amount: int
 
     model_config = ConfigDict(from_attributes=True)

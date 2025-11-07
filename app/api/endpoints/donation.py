@@ -6,7 +6,7 @@ from app.core.user import current_superuser, current_user
 from app.crud.charity_project import charity_project_crud
 from app.crud.donation import donation_crud
 from app.models import User
-from app.schemas.donation import DonationCreate, DonationDB
+from app.schemas.donation import DonationCreate, DonationDB, DonationUserDB
 from app.services.investing import invest
 
 
@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.post(
     '/',
-    response_model=DonationDB,
+    response_model=DonationUserDB,
     response_model_exclude_none=True,
 )
 async def create_donation(
@@ -50,7 +50,7 @@ async def get_all_donations(
 
 @router.get(
     '/my',
-    response_model=list[DonationDB],
+    response_model=list[DonationUserDB],
     response_model_exclude_none=True,
 )
 async def get_my_donations(

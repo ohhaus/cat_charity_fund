@@ -17,5 +17,13 @@ class CRUDDonation(CRUDBase[Donation, DonationCreate, DonationUpdate]):
         )
         return user_donations.scalars().all()
 
+    async def get_active_donations(self, session: AsyncSession):
+        active_donations = await session.execute(
+            select(Donation)
+            .where(Donation.fully_invested.is_(False))
+            .order_by(Donation.create_date)
+        )
+        return active_donations.scalars().all()
+
 
 donation_crud = CRUDDonation(Donation)

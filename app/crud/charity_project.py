@@ -14,7 +14,7 @@ from app.schemas.charity_project import (
 class CRUDCharityProject(
     CRUDBase[CharityProject, CharityProjectCreate, CharityProjectUpdate]
 ):
-    async def get_project_id_by_name(
+    async def get_by_name(
         self, project_name: str, session: AsyncSession
     ) -> int | None:
         project_id = await session.execute(

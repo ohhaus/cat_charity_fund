@@ -21,7 +21,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         obj_in: CreateSchemaType,
         session: AsyncSession,
-        extra_data: dict | None,
+        extra_data: dict | None = None,
     ) -> ModelType:
         obj_data = obj_in.model_dump()
         if extra_data:

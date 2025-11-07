@@ -13,7 +13,7 @@ async def check_name_duplicate(
     existing_project = await charity_project_crud.get_by_name(name, session)
     if existing_project and existing_project.id != current_project_id:
         raise HTTPException(
-            status_code=422, detail='Проект с таким именем уже существует.'
+            status_code=400, detail='Проект с таким именем уже существует.'
         )
 
 
@@ -43,4 +43,16 @@ async def check_full_amount_not_less_than_invested(
         raise HTTPException(
             status_code=400,
             detail='Требуемая сумма не может быть меньше уже вложенной.',
+        )
+
+
+async def check_project_can_be_deleted(project: CharityProject):
+    if project.invested_amount > 0:
+        raise HTTPException(
+            status_code=400,
+            detail='В проект были внесены средства, не подлежит удалению!',
+        )
+    if project.fully_invested:
+        raise HTTPException(
+            status_code=400, detail='Закрытый проект нельзя удалить!'
         )

@@ -6,12 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.validators import (
     check_full_amount_not_less_than_invested,
     check_name_duplicate,
+    check_project_can_be_deleted,
     check_project_exists,
     check_project_not_closed,
 )
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
+from app.crud.donation import donation_crud
 from app.models import User
 from app.schemas.charity_project import (
     CharityProjectCreate,
@@ -31,12 +33,14 @@ async def create_charity_project(
     user: User = Depends(current_superuser),
 ):
     await check_name_duplicate(project.name, session)
-    new_project = await charity_project_crud.create(project, session)
+    new_project = await charity_project_crud.create(
+        project, session, extra_data=None
+    )
 
     session.add_all(
         invest(
             target=new_project,
-            sources=await charity_project_crud.get_active_projects(session),
+            sources=await donation_crud.get_active_donations(session),
         )
     )
     await session.commit()
@@ -50,7 +54,7 @@ async def create_charity_project(
     response_model_exclude_none=True,
 )
 async def get_all_charity_projects(
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     projects_list = await charity_project_crud.get_multi(session)
     return projects_list
@@ -58,7 +62,7 @@ async def get_all_charity_projects(
 
 @router.patch(
     '/{project_id}',
-    response_model=CharityProjectUpdate,
+    response_model=CharityProjectDB,
     response_model_exclude_none=True,
 )
 async def update_charity_project(
@@ -94,18 +98,18 @@ async def update_charity_project(
     session.add_all(
         invest(
             target=updated_project,
-            sources=await charity_project_crud.get_active_projects(session),
+            sources=await donation_crud.get_active_donations(session),
         )
     )
 
     await session.commit()
-    await session.refresh(project)
+    await session.refresh(updated_project)
 
-    return project
+    return updated_project
 
 
 @router.delete(
-    '/{prject_id}',
+    '/{project_id}',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
 )
@@ -115,6 +119,7 @@ async def delete_charity_project(
     user: User = Depends(current_superuser),
 ):
     project = await check_project_exists(project_id, session)
+    await check_project_can_be_deleted(project)
     project = await charity_project_crud.remove(project, session)
 
     return project
