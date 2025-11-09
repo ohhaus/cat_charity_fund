@@ -6,6 +6,25 @@ from app.core.db import Base
 
 
 class BaseInvestment(Base):
+    """
+    Базовая абстрактная модель для инвестиций.
+
+    Предоставляет общие поля для моделей, связанных с
+    инвестициями и распределением средств (проекты и
+    пожертвования).
+
+    Attributes:
+        full_amount: Полная требуемая/внесенная сумма
+        invested_amount: Уже инвестированная/распределенная сумма
+        fully_invested: Флаг полного инвестирования
+        create_date: Дата и время создания записи
+        close_date: Дата и время закрытия
+
+    Constraints:
+        - full_amount должна быть больше 0
+        - invested_amount в диапазоне от 0 до full_amount
+    """
+
     __abstract__ = True
 
     full_amount = Column(Integer, nullable=False)
@@ -26,12 +45,8 @@ class BaseInvestment(Base):
         ),
     )
 
-    def close_investment(self):
-        if self.invested_amount >= self.full_amount:
-            self.fully_invested = True
-            self.close_date = datetime.now(timezone.utc)
-
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Возвращает строковое представление объекта."""
         return (
             f'{type(self).__name__} '
             f'full_amount={self.full_amount}, '

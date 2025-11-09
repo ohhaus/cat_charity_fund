@@ -2,6 +2,8 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
+    """Настройки приложения."""
+
     app_title: str = 'QRKot: Благотворительный фонд поддержки котиков'
     app_description: str = (
         'Сервис для сбора пожертвований на различные целевые проекты'
@@ -13,6 +15,8 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = '.env'
+        env_file_encoding = 'utf-8'
+        env_prefix = 'APP_'
 
 
 settings = Settings()

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,21 +14,48 @@ from app.schemas.charity_project import (
 class CRUDCharityProject(
     CRUDBase[CharityProject, CharityProjectCreate, CharityProjectUpdate]
 ):
+    """
+    CRUD для работы с благотворительными проектами.
+
+    Предоставляет методы для создания, получения, обновления
+    и удаления благотворительных проектов.
+    """
+
     async def get_by_name(
         self, project_name: str, session: AsyncSession
-    ) -> Optional[int]:
-        project_id = await session.execute(
-            select(CharityProject).where(CharityProject.name == project_name)
-        )
-        return project_id.scalar_one_or_none()
+    ) -> Optional[CharityProject]:
+        """
+        Получает проект по его имени.
 
-    async def get_active_projects(self, session: AsyncSession):
-        active_projects_list = await session.execute(
+        Args:
+            project_name: Имя проекта для поиска
+            session: Асинхронная сессия базы данных
+
+        Returns:
+            Optional[CharityProject]: Найденный проект или None
+        """
+        return await self.find_one_by(session, name=project_name)
+
+    async def get_active_projects(
+        self, session: AsyncSession
+    ) -> Sequence[CharityProject]:
+        """
+        Получает все активные проекты.
+
+        Проекты возвращаются отсортированными по дате создания.
+
+        Args:
+            session: Асинхронная сессия базы данных
+
+        Returns:
+            Sequence[CharityProject]: Список активных проектов
+        """
+        result = await session.execute(
             select(CharityProject)
             .where(CharityProject.fully_invested.is_(False))
             .order_by(CharityProject.create_date)
         )
-        return active_projects_list.scalars().all()
+        return result.scalars().all()
 
 
 charity_project_crud = CRUDCharityProject(CharityProject)

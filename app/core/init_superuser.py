@@ -1,4 +1,6 @@
 import asyncio
+import logging
+from typing import Optional
 
 from fastapi_users import exceptions
 
@@ -8,11 +10,20 @@ from app.core.user import UserManager, get_user_db
 from app.schemas.user import UserCreate
 
 
+logger = logging.getLogger(__name__)
+
+
 async def create_superuser(
-    email: str = None,
-    password: str = None,
-):
-    """Создает суперпользователя, если его нет."""
+    email: Optional[str] = None,
+    password: Optional[str] = None,
+) -> None:
+    """
+    Создает суперпользователя, если его нет.
+
+    Args:
+        email: Email (по умолчанию из настроек)
+        password: Пароль (по умолчанию из настроек)
+    """
     if email is None:
         email = settings.first_superuser_email
     if password is None:
@@ -25,7 +36,7 @@ async def create_superuser(
 
             try:
                 await manager.get_by_email(email)
-                print('Суперпользователь уже существует.')
+                logger.info('Суперпользователь уже существует.')
                 return
             except exceptions.UserNotExists:
                 user_create = UserCreate(
@@ -36,10 +47,10 @@ async def create_superuser(
                     is_verified=True,
                 )
                 user = await manager.create(user_create)
-                print(f'Суперпользователь {user.email} создан.')
+                logger.info(f'Суперпользователь {user.email} создан.')
 
 
-async def create_first_superuser():
+async def create_first_superuser() -> None:
     """Создает первого суперпользователя из настроек."""
     await create_superuser(
         email=settings.first_superuser_email,
@@ -48,4 +59,5 @@ async def create_first_superuser():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     asyncio.run(create_first_superuser())
