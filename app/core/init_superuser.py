@@ -2,32 +2,32 @@ import asyncio
 
 from fastapi_users import exceptions
 
+from app.core.config import settings
 from app.core.db import get_async_session
 from app.core.user import UserManager, get_user_db
 from app.schemas.user import UserCreate
 
 
-SUPERUSER_EMAIL = 'root@admin.ru'
-SUPERUSER_PASSWORD = 'root'
-
-
 async def create_superuser(
-    email: str = SUPERUSER_EMAIL,
-    password: str = SUPERUSER_PASSWORD,
+    email: str = None,
+    password: str = None,
 ):
     """Создает суперпользователя, если его нет."""
+    if email is None:
+        email = settings.first_superuser_email
+    if password is None:
+        password = settings.first_superuser_password
+
     async for session in get_async_session():
         async with session:
             user_db = await get_user_db(session).__anext__()
             manager = UserManager(user_db)
 
             try:
-                # Проверяем, существует ли пользователь
                 await manager.get_by_email(email)
                 print('Суперпользователь уже существует.')
                 return
             except exceptions.UserNotExists:
-                # Пользователь не найден — создаем
                 user_create = UserCreate(
                     email=email,
                     password=password,
@@ -39,5 +39,13 @@ async def create_superuser(
                 print(f'Суперпользователь {user.email} создан.')
 
 
+async def create_first_superuser():
+    """Создает первого суперпользователя из настроек."""
+    await create_superuser(
+        email=settings.first_superuser_email,
+        password=settings.first_superuser_password,
+    )
+
+
 if __name__ == '__main__':
-    asyncio.run(create_superuser())
+    asyncio.run(create_first_superuser())
