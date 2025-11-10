@@ -34,8 +34,7 @@ async def create_charity_project(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_superuser),
 ):
-    """
-    Создает новый благотворительный проект.
+    """Создает новый благотворительный проект.
 
     Доступно только суперпользователям.
     """
@@ -52,8 +51,7 @@ async def create_charity_project(
 async def get_all_charity_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
-    """
-    Возвращает список всех благотворительных проектов.
+    """Возвращает список всех благотворительных проектов.
 
     Доступно всем пользователям, включая анонимных.
     """
@@ -72,8 +70,7 @@ async def update_charity_project(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_superuser),
 ):
-    """
-    Обновляет существующий благотворительный проект.
+    """Обновляет существующий благотворительный проект.
 
     Доступно только суперпользователям.
     Нельзя обновлять закрытые проекты.
@@ -108,8 +105,7 @@ async def delete_charity_project(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_superuser),
 ):
-    """
-    Удаляет благотворительный проект.
+    """Удаляет благотворительный проект.
 
     Доступно только суперпользователям.
     Нельзя удалять проекты, в которые внесены средства.

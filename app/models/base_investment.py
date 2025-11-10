@@ -6,23 +6,22 @@ from app.core.db import Base
 
 
 class BaseInvestment(Base):
-    """
-    Базовая абстрактная модель для инвестиций.
+    """Базовая абстрактная модель для инвестиций.
 
     Предоставляет общие поля для моделей, связанных с
     инвестициями и распределением средств (проекты и
     пожертвования).
 
     Attributes:
-        full_amount: Полная требуемая/внесенная сумма
-        invested_amount: Уже инвестированная/распределенная сумма
-        fully_invested: Флаг полного инвестирования
-        create_date: Дата и время создания записи
-        close_date: Дата и время закрытия
+        full_amount: Полная требуемая/внесенная сумма.
+        invested_amount: Уже инвестированная/распределенная сумма.
+        fully_invested: Флаг полного инвестирования.
+        create_date: Дата и время создания записи.
+        close_date: Дата и время закрытия.
 
     Constraints:
-        - full_amount должна быть больше 0
-        - invested_amount в диапазоне от 0 до full_amount
+        - full_amount должна быть больше 0.
+        - invested_amount в диапазоне от 0 до full_amount.
     """
 
     __abstract__ = True

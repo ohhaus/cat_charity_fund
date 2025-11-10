@@ -24,8 +24,7 @@ async def create_donation(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user),
 ):
-    """
-    Создает новое пожертвование от текущего пользователя.
+    """Создает новое пожертвование от текущего пользователя.
 
     Средства автоматически распределяются по активным
     благотворительным проектам.
@@ -43,8 +42,7 @@ async def get_all_donations(
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_superuser),
 ):
-    """
-    Возвращает список всех пожертвований в системе.
+    """Возвращает список всех пожертвований в системе.
 
     Доступно только суперпользователям.
     """

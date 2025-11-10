@@ -14,8 +14,7 @@ from app.services.investing import invest
 
 
 class CharityProjectService:
-    """
-    Сервис для управления благотворительными проектами.
+    """Сервис для управления благотворительными проектами.
 
     Содержит бизнес-логику для создания, обновления и
     удаления проектов, а также автоматического инвестирования.
@@ -26,15 +25,14 @@ class CharityProjectService:
         project_data: CharityProjectCreate,
         session: AsyncSession,
     ) -> CharityProject:
-        """
-        Создает новый проект и автоматически инвестирует средства.
+        """Создает новый проект и автоматически инвестирует средства.
 
         Args:
-            project_data: Данные для создания проекта
-            session: Асинхронная сессия базы данных
+            project_data: Данные для создания проекта.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            CharityProject: Созданный и проинвестированный проект
+            Созданный и проинвестированный проект.
         """
         new_project = await charity_project_crud.create(
             project_data, session, extra_data=None
@@ -57,19 +55,18 @@ class CharityProjectService:
         project_update: CharityProjectUpdate,
         session: AsyncSession,
     ) -> CharityProject:
-        """
-        Обновляет проект и проверяет статус финансирования.
+        """Обновляет проект и проверяет статус финансирования.
 
         Если после обновления проект достиг полного финансирования,
         автоматически закрывает его.
 
         Args:
-            project: Проект для обновления
-            project_update: Данные для обновления
-            session: Асинхронная сессия базы данных
+            project: Проект для обновления.
+            project_update: Данные для обновления.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            CharityProject: Обновленный проект
+            Обновленный проект.
         """
         updated_project = await charity_project_crud.update(
             project, project_update, session
@@ -94,30 +91,27 @@ class CharityProjectService:
         project: CharityProject,
         session: AsyncSession,
     ) -> CharityProject:
-        """
-        Удаляет благотворительный проект.
+        """Удаляет благотворительный проект.
 
         Args:
-            project: Проект для удаления
-            session: Асинхронная сессия базы данных
+            project: Проект для удаления.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            CharityProject: Удаленный проект
+            Удаленный проект.
         """
-        deleted_project = await charity_project_crud.remove(project, session)
-        return deleted_project
+        return await charity_project_crud.remove(project, session)
 
     async def get_all_projects(
         self, session: AsyncSession
     ) -> List[CharityProject]:
-        """
-        Получает все благотворительные проекты.
+        """Получает все благотворительные проекты.
 
         Args:
-            session: Асинхронная сессия базы данных
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            List[CharityProject]: Список всех проектов
+            Список всех проектов.
         """
         projects = await charity_project_crud.get_multi(session)
         return list(projects)
@@ -125,36 +119,33 @@ class CharityProjectService:
     async def get_project_by_id(
         self, project_id: int, session: AsyncSession
     ) -> Optional[CharityProject]:
-        """
-        Получает проект по его ID.
+        """Получает проект по его ID.
 
         Args:
-            project_id: ID проекта
-            session: Асинхронная сессия базы данных
+            project_id: ID проекта.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            Optional[CharityProject]: Найденный проект или None
+            Найденный проект или None.
         """
         return await charity_project_crud.get(project_id, session)
 
     def _is_fully_funded(self, project: CharityProject) -> bool:
-        """
-        Проверяет, достиг ли проект полного финансирования.
+        """Проект достиг полного финансирования.
 
         Args:
-            project: Проект для проверки
+            project: Проект для проверки.
 
         Returns:
-            bool: True, если проект полностью профинансирован
+            True, если проект полностью профинансирован.
         """
         return project.invested_amount >= project.full_amount
 
     def _close_project(self, project: CharityProject) -> None:
-        """
-        Закрывает проект, устанавливая флаг и дату закрытия.
+        """Закрывает проект, устанавливая флаг и дату закрытия.
 
         Args:
-            project: Проект для закрытия
+            project: Проект для закрытия.
         """
         project.fully_invested = True
         project.close_date = datetime.now(timezone.utc)

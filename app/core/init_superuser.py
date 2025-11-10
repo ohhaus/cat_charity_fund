@@ -17,12 +17,11 @@ async def create_superuser(
     email: Optional[str] = None,
     password: Optional[str] = None,
 ) -> None:
-    """
-    Создает суперпользователя, если его нет.
+    """Создает суперпользователя, если его нет.
 
     Args:
-        email: Email (по умолчанию из настроек)
-        password: Пароль (по умолчанию из настроек)
+        email: Email (по умолчанию из настроек).
+        password: Пароль (по умолчанию из настроек).
     """
     if email is None:
         email = settings.first_superuser_email

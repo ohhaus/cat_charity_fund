@@ -13,20 +13,18 @@ async def check_name_duplicate(
     session: AsyncSession,
     current_project_id: Optional[int] = None,
 ) -> None:
-    """
-    Проверяет уникальность имени проекта.
+    """Имя проекта уникально в базе данных.
 
-    Выбрасывает исключение, если проект с таким именем уже
-    существует (исключая случай обновления существующего
-    проекта).
+    Выбрасывает исключение, если проект с таким именем уже существует.
+    При обновлении проекта исключается проверка текущего проекта.
 
     Args:
-        name: Имя проекта для проверки
-        session: Асинхронная сессия базы данных
-        current_project_id: ID текущего проекта (при обновлении)
+        name: Имя проекта для проверки.
+        session: Асинхронная сессия базы данных.
+        current_project_id: ID текущего проекта (при обновлении).
 
     Raises:
-        HTTPException: Если проект с таким именем уже существует
+        HTTPException: Если проект с таким именем уже существует.
     """
     existing_project = await charity_project_crud.get_by_name(name, session)
     if existing_project and existing_project.id != current_project_id:
@@ -40,18 +38,17 @@ async def check_project_exists(
     project_id: int,
     session: AsyncSession,
 ) -> CharityProject:
-    """
-    Проверяет существование проекта по его ID.
+    """Проект существует в базе данных.
 
     Args:
-        project_id: ID проекта для проверки
-        session: Асинхронная сессия базы данных
+        project_id: ID проекта для проверки.
+        session: Асинхронная сессия базы данных.
 
     Returns:
-        CharityProject: Найденный проект
+        Найденный проект.
 
     Raises:
-        HTTPException: Если проект не найден
+        HTTPException: Если проект не найден.
     """
     project = await charity_project_crud.get(project_id, session)
     if not project:
@@ -63,14 +60,13 @@ async def check_project_exists(
 
 
 async def check_project_not_closed(project: CharityProject) -> None:
-    """
-    Проверяет, что проект не закрыт.
+    """Проект открыт для редактирования.
 
     Args:
-        project: Проект для проверки
+        project: Проект для проверки.
 
     Raises:
-        HTTPException: Если проект уже закрыт
+        HTTPException: Если проект уже закрыт.
     """
     if project.fully_invested:
         raise HTTPException(
@@ -83,15 +79,14 @@ async def check_full_amount_not_less_than_invested(
     project: CharityProject,
     new_full_amount: Optional[int],
 ) -> None:
-    """
-    Проверяет, что новая сумма не меньше уже вложенной.
+    """Новая требуемая сумма не меньше уже вложенной суммы.
 
     Args:
-        project: Проект для проверки
-        new_full_amount: Новая требуемая сумма (может быть None)
+        project: Проект для проверки.
+        new_full_amount: Новая требуемая сумма (может быть None).
 
     Raises:
-        HTTPException: Если новая сумма меньше уже вложенной
+        HTTPException: Если новая сумма меньше уже вложенной.
     """
     if (new_full_amount is not None and
             new_full_amount < project.invested_amount):
@@ -102,18 +97,17 @@ async def check_full_amount_not_less_than_invested(
 
 
 async def check_project_can_be_deleted(project: CharityProject) -> None:
-    """
-    Проверяет возможность удаления проекта.
+    """Проект может быть удален без нарушения целостности данных.
 
     Проект нельзя удалить, если:
-    - В него уже были внесены средства (invested_amount > 0)
-    - Проект закрыт (fully_invested = True)
+    - В него уже были внесены средства (invested_amount > 0).
+    - Проект закрыт (fully_invested = True).
 
     Args:
-        project: Проект для проверки
+        project: Проект для проверки.
 
     Raises:
-        HTTPException: Если проект нельзя удалить
+        HTTPException: Если проект нельзя удалить.
     """
     if project.invested_amount > 0:
         raise HTTPException(

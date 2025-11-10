@@ -3,8 +3,8 @@ from app.models import CharityProject, Donation, User
 
 
 __all__ = [
-    "Base",
-    "CharityProject",
-    "Donation",
-    "User",
+    'Base',
+    'CharityProject',
+    'Donation',
+    'User',
 ]

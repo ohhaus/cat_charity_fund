@@ -8,11 +8,10 @@ InvestableType = TypeVar('InvestableType', bound=BaseInvestment)
 
 
 def close_investment_if_fully_funded(obj: InvestableType) -> None:
-    """
-    Закрывает инвестицию, если она полностью профинансирована.
+    """Закрывает инвестицию, если она полностью профинансирована.
 
     Args:
-        obj: Объект инвестиции (проект или пожертвование)
+        obj: Объект инвестиции (проект или пожертвование).
     """
     if obj.invested_amount >= obj.full_amount:
         obj.fully_invested = True
@@ -22,8 +21,7 @@ def close_investment_if_fully_funded(obj: InvestableType) -> None:
 def invest(
     target: InvestableType, sources: Sequence[InvestableType]
 ) -> List[InvestableType]:
-    """
-    Перераспределяет средства между источниками и целью.
+    """Перераспределяет средства между источниками и целью.
 
     Функция распределяет средства из активных источников
     (пожертвований или проектов) в целевой объект до его
@@ -31,11 +29,11 @@ def invest(
     поступления источников (FIFO).
 
     Args:
-        target: Целевой объект (проект или пожертвование)
-        sources: Последовательность источников средств
+        target: Целевой объект (проект или пожертвование).
+        sources: Последовательность источников средств.
 
     Returns:
-        List[InvestableType]: Список обновленных источников
+        Список обновленных источников.
 
     Example:
         >>> project = CharityProject(full_amount=1000)

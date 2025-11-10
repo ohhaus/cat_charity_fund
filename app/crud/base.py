@@ -14,19 +14,17 @@ UpdateSchemaType = TypeVar('UpdateSchemaType', bound=BaseModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    """
-    Базовый CRUD класс для работы с данными.
+    """Базовый CRUD класс для работы с данными.
 
     Предоставляет стандартные операции создания, чтения,
     обновления и удаления.
     """
 
     def __init__(self, model: Type[ModelType]) -> None:
-        """
-        Инициализирует CRUD с указанной моделью.
+        """Инициализирует CRUD с указанной моделью.
 
         Args:
-            model: Класс модели SQLAlchemy
+            model: Класс модели SQLAlchemy.
         """
         self.model = model
 
@@ -36,16 +34,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         session: AsyncSession,
         extra_data: Optional[Dict[str, Any]] = None,
     ) -> ModelType:
-        """
-        Создает новый объект в базе данных.
+        """Создает новый объект в базе данных.
 
         Args:
-            obj_in: Схема создания объекта
-            session: Асинхронная сессия базы данных
-            extra_data: Дополнительные данные для объекта
+            obj_in: Схема создания объекта.
+            session: Асинхронная сессия базы данных.
+            extra_data: Дополнительные данные для объекта.
 
         Returns:
-            ModelType: Созданный объект
+            Созданный объект.
         """
         obj_data = obj_in.dict()
         if extra_data:
@@ -59,15 +56,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get(
         self, obj_id: int, session: AsyncSession
     ) -> Optional[ModelType]:
-        """
-        Получает объект по ID.
+        """Получает объект по ID.
 
         Args:
-            obj_id: ID объекта
-            session: Асинхронная сессия БД
+            obj_id: ID объекта.
+            session: Асинхронная сессия БД.
 
         Returns:
-            Optional[ModelType]: Найденный объект или None
+            Найденный объект или None.
         """
         result = await session.execute(
             select(self.model).where(self.model.id == obj_id)
@@ -75,14 +71,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalar_one_or_none()
 
     async def get_multi(self, session: AsyncSession) -> Sequence[ModelType]:
-        """
-        Получает все объекты из БД.
+        """Получает все объекты из БД.
 
         Args:
-            session: Асинхронная сессия БД
+            session: Асинхронная сессия БД.
 
         Returns:
-            Sequence[ModelType]: Список всех объектов
+            Список всех объектов.
         """
         result = await session.execute(select(self.model))
         return result.scalars().all()
@@ -90,15 +85,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def find_by(
         self, session: AsyncSession, **filter_kwargs: Any
     ) -> Sequence[ModelType]:
-        """
-        Находит объекты по заданным фильтрам.
+        """Находит объекты по заданным фильтрам.
 
         Args:
-            session: Асинхронная сессия БД
-            **filter_kwargs: Критерии фильтрации
+            session: Асинхронная сессия БД.
+            **filter_kwargs: Критерии фильтрации.
 
         Returns:
-            Sequence[ModelType]: Список найденных объектов
+            Список найденных объектов.
 
         Example:
             >>> await crud.find_by(session, user_id=1)
@@ -113,15 +107,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def find_one_by(
         self, session: AsyncSession, **filter_kwargs: Any
     ) -> Optional[ModelType]:
-        """
-        Находит один объект по заданным фильтрам.
+        """Находит один объект по заданным фильтрам.
 
         Args:
-            session: Асинхронная сессия БД
-            **filter_kwargs: Критерии фильтрации
+            session: Асинхронная сессия БД.
+            **filter_kwargs: Критерии фильтрации.
 
         Returns:
-            Optional[ModelType]: Найденный объект или None
+            Найденный объект или None.
 
         Example:
             >>> await crud.find_one_by(session, name='Project')
@@ -139,16 +132,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: UpdateSchemaType,
         session: AsyncSession,
     ) -> ModelType:
-        """
-        Обновляет существующий объект.
+        """Обновляет существующий объект.
 
         Args:
-            db_obj: Объект для обновления
-            obj_in: Схема обновления с новыми данными
-            session: Асинхронная сессия БД
+            db_obj: Объект для обновления.
+            obj_in: Схема обновления с новыми данными.
+            session: Асинхронная сессия БД.
 
         Returns:
-            ModelType: Обновленный объект
+            Обновленный объект.
         """
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in.dict(exclude_unset=True)
@@ -164,15 +156,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def remove(
         self, db_obj: ModelType, session: AsyncSession
     ) -> ModelType:
-        """
-        Удаляет объект из БД.
+        """Удаляет объект из БД.
 
         Args:
-            db_obj: Объект для удаления
-            session: Асинхронная сессия БД
+            db_obj: Объект для удаления.
+            session: Асинхронная сессия БД.
 
         Returns:
-            ModelType: Удаленный объект
+            Удаленный объект.
         """
         await session.delete(db_obj)
         await session.commit()

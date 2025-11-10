@@ -11,8 +11,7 @@ from app.services.investing import invest
 
 
 class DonationService:
-    """
-    Сервис для управления пожертвованиями.
+    """Сервис для управления пожертвованиями.
 
     Содержит бизнес-логику для создания пожертвований и
     автоматического распределения средств по проектам.
@@ -24,19 +23,18 @@ class DonationService:
         user: User,
         session: AsyncSession,
     ) -> Donation:
-        """
-        Создает новое пожертвование и распределяет средства.
+        """Создает новое пожертвование и распределяет средства.
 
         Средства автоматически инвестируются в активные
         благотворительные проекты в порядке их создания (FIFO).
 
         Args:
-            donation_data: Данные для создания пожертвования
-            user: Пользователь, создающий пожертвование
-            session: Асинхронная сессия базы данных
+            donation_data: Данные для создания пожертвования.
+            user: Пользователь, создающий пожертвование.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            Donation: Созданное и распределенное пожертвование
+            Созданное и распределенное пожертвование.
         """
         new_donation = await donation_crud.create(
             donation_data,
@@ -56,35 +54,31 @@ class DonationService:
         return new_donation
 
     async def get_all_donations(self, session: AsyncSession) -> List[Donation]:
-        """
-        Получает все пожертвования в системе.
+        """Получает все пожертвования в системе.
 
         Метод доступен только для суперпользователей.
 
         Args:
-            session: Асинхронная сессия базы данных
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            List[Donation]: Список всех пожертвований
+            Список всех пожертвований.
         """
-        donations = await donation_crud.get_multi(session)
-        return list(donations)
+        return list(await donation_crud.get_multi(session))
 
     async def get_user_donations(
         self, user_id: int, session: AsyncSession
     ) -> List[Donation]:
-        """
-        Получает все пожертвования конкретного пользователя.
+        """Получает все пожертвования конкретного пользователя.
 
         Args:
-            user_id: ID пользователя
-            session: Асинхронная сессия базы данных
+            user_id: ID пользователя.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            List[Donation]: Список пожертвований пользователя
+            Список пожертвований пользователя.
         """
-        donations = await donation_crud.get_by_user(session, user_id)
-        return list(donations)
+        return list(await donation_crud.get_by_user(session, user_id))
 
 
 donation_service = DonationService()

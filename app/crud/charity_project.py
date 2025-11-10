@@ -14,8 +14,7 @@ from app.schemas.charity_project import (
 class CRUDCharityProject(
     CRUDBase[CharityProject, CharityProjectCreate, CharityProjectUpdate]
 ):
-    """
-    CRUD для работы с благотворительными проектами.
+    """CRUD для работы с благотворительными проектами.
 
     Предоставляет методы для создания, получения, обновления
     и удаления благотворительных проектов.
@@ -24,31 +23,29 @@ class CRUDCharityProject(
     async def get_by_name(
         self, project_name: str, session: AsyncSession
     ) -> Optional[CharityProject]:
-        """
-        Получает проект по его имени.
+        """Получает проект по его имени.
 
         Args:
-            project_name: Имя проекта для поиска
-            session: Асинхронная сессия базы данных
+            project_name: Имя проекта для поиска.
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            Optional[CharityProject]: Найденный проект или None
+            Найденный проект или None.
         """
         return await self.find_one_by(session, name=project_name)
 
     async def get_active_projects(
         self, session: AsyncSession
     ) -> Sequence[CharityProject]:
-        """
-        Получает все активные проекты.
+        """Получает все активные проекты.
 
         Проекты возвращаются отсортированными по дате создания.
 
         Args:
-            session: Асинхронная сессия базы данных
+            session: Асинхронная сессия базы данных.
 
         Returns:
-            Sequence[CharityProject]: Список активных проектов
+            Список активных проектов.
         """
         result = await session.execute(
             select(CharityProject)
